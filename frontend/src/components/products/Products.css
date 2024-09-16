@@ -1,0 +1,42 @@
+
+.card-side1 img:hover{
+    color: #eb5757;
+}
+
+.card-side2 p:hover{
+    color: #eb5757;
+}
+.card-mrp p:hover{
+    color: #eb5757;
+}
+.card-price span:hover{
+    color: #eb5757;
+}
+
+
+.pagination-btn{
+    display: flex;
+    height: 100px;
+    margin: auto;
+    align-items: center;
+    padding: 5px;
+    justify-content: space-around;
+    font-size: 1.2rem;
+    width: 400px;
+    gap:6px;
+}
+.pagination-btn button{
+    height: 42px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+.position-sticky {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+  }
+  
+  .filters-container {
+    top: 10px; /* Adjust as needed */
+    z-index: 1; /* Ensure it stays above other content */
+  }
+  

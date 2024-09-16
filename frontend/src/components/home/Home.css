@@ -1,0 +1,30 @@
+/* Ensure no margin or padding is applied to the carousel container */
+.carousel {
+    margin: 0;
+    padding: 0;
+  }
+  
+
+  .carousel-image {
+    object-fit: cover;
+    height: 250px; /* Or any other height as needed */
+  }
+  
+  
+  /* Optional: Remove any padding/margin in the carousel caption if needed */
+  .carousel-caption {
+    margin: 0;
+  }
+
+  .slick-slide div{
+    margin: 0 10px;
+  }
+  
+  .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }

@@ -1,0 +1,36 @@
+.container1{
+    padding: 8px;
+}
+.cartlogo{
+    position: absolute;
+    right: 0;
+    margin-right: 2%;
+    border-radius:5px;
+    width:53px;
+    padding:6px 15px;
+    float: right;
+    background-color:black
+}
+
+.logo img{
+    width:  100px;
+}
+.nav{
+    margin-left: auto;
+    margin-right: 8%;
+}
+.nav-link{
+    transition: none;
+}
+.nav-item :hover{
+   
+    background-color:black;
+    border-radius: 10px;
+}
+.lead {
+    font-weight: 200;
+    opacity: 0.9;
+    font-size: 0.9em;
+}
+
+
