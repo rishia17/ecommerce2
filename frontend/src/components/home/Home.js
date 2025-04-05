@@ -12,6 +12,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './Home.css'; 
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 // Custom arrow button components
@@ -62,6 +63,7 @@ function Home() {
   const [topProductsList, setTopProductsList] = useState([]);
   const [limitedOffersList, setLimitedOffersList] = useState([]);
   const token = sessionStorage.getItem('token');
+  const {loginStatus,currentUser} = useSelector((state)=>state.userLogin)
   
   const axiosWithToken = axios.create({
     headers: { Authorization: `Bearer ${token}` },
@@ -69,6 +71,21 @@ function Home() {
   
   const navigate = useNavigate();
   let [err, setErr] = useState('');
+
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+    const getRecentlyViewed = async () => {
+      if (loginStatus) {
+        const res = await axiosWithToken.get(`http://localhost:5500/user-api/recently-viewed/${currentUser.userName}`);
+        if (res.data.message === 'recently viewed products') {
+          setRecentlyViewed(res.data.payload);
+        }
+      }
+    };
+
+    useEffect(() => {
+      getRecentlyViewed();
+    }, []);
 
   const getTopNewProducts = async () => {
       const res = await axiosWithToken.get(`http://localhost:5500/user-api/products/top-new`);
@@ -223,6 +240,60 @@ useEffect(() => {
             )}
           </div>
         </div>
+        {recentlyViewed.length > 0 && (
+      <div className='recently-viewed'>
+        <h5 style={{ textAlign: 'left', marginLeft: '10px', fontWeight: '500' }}>Recently Viewed</h5>
+        <div className='products-slider' style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+          <Slider {...settings}>
+            {recentlyViewed.map((product) => (
+              <div className="card d-flex product-card" key={product.productId}
+                style={{
+                  width: '200px',
+                  margin: '0 10px',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                <div className='card-side1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <img
+                    src={`${product.imageUrls[0]}`}
+                    alt=""
+                    style={{ height: '100px', width: '100px', objectFit: 'contain' }}
+                    onClick={() => getProductDetails(product)}
+                  />
+                </div>
+                <div className='product-details' style={{ textAlign: 'center' }}>
+                  <p onClick={() => getProductDetails(product)}
+                    style={{ marginTop: '5%', fontWeight: '500', fontSize: '1rem' }}>
+                    {`${product.name.substring(0, 40)}...`}
+                  </p>
+                </div>
+                <div className='product-brand' style={{ textAlign: 'center' }}>
+                  <p style={{ fontSize: '1.2rem', fontWeight: '500' }}>
+                    <span style={{ fontWeight: 'bold' }}>Brand:</span> {`${product.brand}`}
+                  </p>
+                </div>
+                <div className='prices-card' style={{ textAlign: 'center' }}>
+                  <div className='card-price'>
+                    <span style={{ fontSize: '28px', fontWeight: '600' }} onClick={() => getProductDetails(product)}>
+                      {`\u20B9 ${Math.floor((product.price - (product.price * (product.discount / 100))) || 0)}`}
+                    </span>
+                  </div>
+                  <div className='card-mrp' onClick={() => getProductDetails(product)}>
+                    <p>
+                      MRP: <span style={{ textDecoration: 'line-through' }}>&#x20B9; {`${product.price}`}</span>
+                      <span style={{ color: '#eb5757' }}>{`${product.discount}`}% off</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </div>
+    )}
     </div>
     </div>
   );

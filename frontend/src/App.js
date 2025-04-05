@@ -14,10 +14,21 @@ import Product from './components/product/Product';
 import Carts from './components/carts/Carts';
 import Adminlogin from './components/adminLogin/Adminlogin';
 import Wishlist from './components/Wishlist/Wishlist';
+
 import 'font-awesome/css/font-awesome.min.css';
+import EditProduct from './components/editProduct/EditProduct';
+
 
 function App() {
   const browserRouter=createBrowserRouter([
+
+
+
+
+
+
+
+
     {
       path:'/',
       element:<Layout/>,
@@ -52,6 +63,10 @@ function App() {
           element:<Addproduct/>
         },
         {
+          path:'/editproduct',
+          element:<EditProduct/>
+        },
+        {
           path:'/product',
           element:<Product/>
         },
@@ -62,7 +77,7 @@ function App() {
         {
           path: '/wishlist',
           element: <Wishlist />
-        },        
+        }, 
         {
           path:'/admin',
           element:<Adminlogin/>

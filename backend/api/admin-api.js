@@ -46,8 +46,85 @@ adminApp.post('/product-filter',expressAsyncHandler(async(req,res)=>{
 
 
   }));
+
+
+  adminApp.get('/related/:productId', async (req, res) => {
+    const { productId } = req.params;
+  
+    const mainProduct = await productsCollection.findOne({ productId: Number(productId) });
+  
+    if (!mainProduct) {
+      return res.send({ message: "Product not found" });
+    }
+  
+    const relatedProducts = await productsCollection.find({
+      $and: [
+        { productId: { $ne: Number(productId) } }, // exclude the current product
+        {
+          $or: [
+            { category: mainProduct.category },
+            { brand: mainProduct.brand }
+          ]
+        }
+      ]
+    }).limit(6).toArray();
+  
+    res.send(relatedProducts);
+  });
     
+  adminApp.get('/products', expressAsyncHandler(async (req, res) => {
+  
+    const productsList = await productsCollection.find().toArray();
+    res.send({ message: "all products", payload: productsList });
+  }));
 
+  adminApp.put('/edit-product', expressAsyncHandler(async (req, res) => {
+      const updatedProduct = req.body;
 
+      if (!updatedProduct.productId) {
+        return res.status(400).send({ message: 'Missing productId' });
+      }
+    
+      // Prevent MongoDB immutable field issue
+      delete updatedProduct._id;
+    
+      // Optional: sanitize fields here if needed
+    
+      const result = await productsCollection.updateOne(
+        { productId: updatedProduct.productId },
+        { $set: updatedProduct }
+      );
+    
+      if (result.matchedCount === 0) {
+        return res.status(404).send({ message: 'Product not found' });
+      }
+    
+      // Fetch the updated product to return it
+      const modifiedProduct = await productsCollection.findOne({ productId: updatedProduct.productId });
+    
+      res.send({ message: 'product modified', product: modifiedProduct });
+    }));
+
+// Delete a product by ID
+adminApp.delete('/delete-product/:productId', expressAsyncHandler(async (req, res) => {
+    const { productId } = req.params;
+    console.log("Deleting product with productId:", productId);
+  
+    try {
+      // Convert string to BSON Long
+    //   const longProductId = Long.fromString(productId);
+  
+      const result = await productsCollection.deleteOne({ productId: Number(productId) });
+      console.log(result)
+      if (result.deletedCount === 1) {
+        res.send({ message: "Product deleted successfully" });
+      } else {
+        res.send({ message: "Product not found" });
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.send({ message: "Error deleting product" });
+    }
+  }));
 //export
 module.exports=adminApp;

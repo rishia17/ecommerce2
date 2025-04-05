@@ -37,9 +37,10 @@ function Header() {
         <li className='nav-item'>
           <NavLink className="nav-link text-white" to="products">Products</NavLink>
         </li>
+        {(loginStatus==false || currentUser.userType!=="admin") &&
         <li className='nav-item'>
           <NavLink className="nav-link text-white" to="contact">Contact</NavLink>
-        </li>
+        </li>}
         {currentUser.userType === 'admin' && (
           <li className='nav-item'>
             <NavLink className="nav-link text-white" to="addproduct">Add product</NavLink>
@@ -64,12 +65,14 @@ function Header() {
           </>
         )}
       </div>
-      <div className='wishlistlogo d-flex justify-content-center align-items-center' style={{ marginRight: "15px" }}>
-        <FiHeart size={22} color='white' onClick={() => navigate('/wishlist')} style={{ cursor: 'pointer' }} />
-      </div>
-      <div className='cartlogo d-flex justify-content-center align-items-center'>
-        <FiShoppingCart height="8px" width="6px" color='white' onClick={NavigateToCart} />
-      </div>
+      <div className='d-flex justify-content-between'>
+      <div className='wishlistlogo d-flex justify-content-center align-items-center'>
+    <FiHeart size={22} color='white' onClick={() => navigate('/wishlist')} style={{ cursor: 'pointer' }} />
+  </div>
+  <div className='cartlogo d-flex justify-content-center align-items-center'>
+    <FiShoppingCart size={22} color='white' onClick={NavigateToCart} style={{ cursor: 'pointer' }} />
+  </div>
+  </div>
 
     </div>
   );

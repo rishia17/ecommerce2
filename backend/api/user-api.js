@@ -2,14 +2,28 @@
 const exp=require('express')
 const userApp=exp.Router()
 const nodemailer = require('nodemailer');
+const checksum = require('./checksum')
+const transacturl = require('./config')
+
+const cron = require("node-cron");
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
+let cartItems = []
 userApp.use(cors());
 require('dotenv').config();
 const { ObjectId } = require('mongodb'); // Import ObjectId from mongodb
 userApp.use(bodyParser.json());
 const {createUserOrAdmin,userOrAdminLogin}=require('./util')
 const expressAsyncHandler=require('express-async-handler')
+userApp.use(cors({
+    origin: 'http://localhost:5500', // allow your frontend origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }));
+
+userApp.use('*',cors())
 userApp.use((req,res,next)=>{
     userCollection=req.app.get("usercollection")
     productsCollection=req.app.get("productscollection")
@@ -99,7 +113,8 @@ userApp.post('/product-filter', expressAsyncHandler(async (req, res) => {
 //add product  to cart
 
 userApp.post('/cart', expressAsyncHandler(async (req, res) => {
-  const {  userName,productId } = req.body;
+  const details = req.body;
+  const {  userName,productId } = req.body.obj;
   // Find the user in the database by username
   const user = await userCollection.findOne({ userName: userName });
   if (!user) return res.status(404).send('User not found');
@@ -110,6 +125,13 @@ userApp.post('/cart', expressAsyncHandler(async (req, res) => {
   if (result.modifiedCount === 0) {
     return res.send({ message: "product is not added" });
   }
+  let addedAt = new Date()
+  let person = details.user
+  cartItems.push({
+    user:person,
+    addedAt:addedAt,
+    emailSent: false
+  });
   res.send({ message: "product added" });
 }));
 
@@ -182,6 +204,7 @@ userApp.post('/mycart/:user/:productId', expressAsyncHandler(async (req, res) =>
   if (result.modifiedCount === 0) {
     return res.send({message: 'Product is not available'});
   }
+  cartItems = cartItems.filter(item => !(item.productId === productId && item.user.email === userEmail));
   res.send({ message: 'product deleted' });
 }));
 
@@ -287,6 +310,161 @@ userApp.get('/wishlist/:user', expressAsyncHandler(async (req, res) => {
     res.send({ message: "no products" });
   }
 }));
+
+// route: /product-api/related/:productId
+
+userApp.get('/related/:productId', expressAsyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  // console.log("first")
+  // console.log(productId)
+
+  const mainProduct = await productsCollection.findOne({ productId: Number(productId) });
+  // console.log(mainProduct)
+  if (!mainProduct) {
+    return res.send({ message: "Product not found" });
+  }
+
+  const relatedProducts = await productsCollection.find({
+    $and: [
+      { productId: { $ne: Number(productId) } }, // exclude the current product
+      {
+        $or: [
+          { category: mainProduct.category },
+          { brand: mainProduct.brand }
+        ]
+      }
+    ]
+  }).limit(6).toArray();
+  // console.log(relatedProducts)
+
+  res.send(relatedProducts);
+}));
+
+
+// Add product to recently viewed
+userApp.post('/recently-viewed', expressAsyncHandler(async (req, res) => {
+  const { userName, productId } = req.body;
+
+  const user = await userCollection.findOne({ userName: userName });
+  if (!user) return res.status(404).send('User not found');
+
+  await userCollection.updateOne(
+    { userName },
+    { $pull: { recentlyViewed: productId } }
+  );
+  await userCollection.updateOne(
+    { userName },
+    { $push: { recentlyViewed: { $each: [productId], $position: 0 } } }
+  );
+  await userCollection.updateOne(
+    { userName },
+    [{ $set: { recentlyViewed: { $slice: ["$recentlyViewed", 10] } } }]
+  );
+
+  res.send({ message: "Product added to recently viewed" });
+}));
+
+
+//get all products in recently viewed
+userApp.get('/recently-viewed/:user', expressAsyncHandler(async (req, res) => {
+  const userName = req.params.user;
+  const user = await userCollection.findOne({ userName: userName });
+
+  if (!user) return res.status(404).send('User not found');
+
+  const productIds = user.recentlyViewed || [];
+
+  if (productIds.length === 0) {
+    return res.send({ message: "no products" });
+  }
+
+  const products = await productsCollection.find({
+    productId: { $in: productIds }
+  }).toArray();
+
+  // Optional: maintain the order of recentlyViewed
+  const orderedProducts = productIds.map(id => products.find(p => p.productId === id)).filter(Boolean);
+
+  res.send({ message: "recently viewed products", payload: orderedProducts });
+}));
+
+
+
+cron.schedule("0 10 * * *", async () => {
+  console.log("Cron triggered")
+    // ✅ Get unique users from cart using Map
+    const uniqueUsers = new Map();
+
+    cartItems.forEach(item => {
+      if (!uniqueUsers.has(item.user.email)) {
+        uniqueUsers.set(item.user.email, item.user.name);
+      }
+    });
+  
+    // ✅ Send emails to users with cart items
+    for (const [email, name] of uniqueUsers.entries()) {
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL,
+          to: email,
+          subject: "🛒 Items waiting in your cart!",
+          html: `
+            <p>Hi ${name},</p>
+            <p>You still have items in your cart! Don’t forget to complete your purchase.</p>
+            <p>🛍️ <a href="http://localhost:5500/">Click here to continue shopping in BuyIt.</a></p>
+          `
+        });
+  
+        console.log(`✅ Reminder sent to ${email}`);
+      } catch (err) {
+        console.error(`❌ Failed to send reminder to ${email}:, ${err}`);
+      }
+    }
+});
+
+userApp.post('/transact', async function(req, res,next) {
+  const obj = req.body
+  console.log(obj.data)
+  console.log("Order ID:", req.body.orderId)
+console.log("Response Code:", req.body.responseCode)
+console.log("Message:", response.getResponseCodes(req.body.responseCode))
+
+  const id = `OID${Date.now()}`
+  const data = {
+      amount: 100,
+      firstName: obj.userName,
+      buyerEmail: obj.email,
+      currency: "INR",
+      merchantIdentifier: "fb2016ffd3a64b2994a6289dc2b671a4",
+      orderId: `ORID${Date.now()}`,
+      returnUrl: "http://localhost:5500/user-api/status"
+  }
+console.log('hi',data)
+  var checksumstring = checksum.getChecksumString(data);
+  var calculatedchecksum = checksum.calculateChecksum(checksumstring);
+  var url = transacturl.merchantInfo.transactApi;
+
+  return res.send({
+       url: url,
+       checksum: calculatedchecksum,
+       data: data
+   }) 
+});
+
+userApp.post('/status', async function(req, res) {
+  try {
+      console.log(req.body)
+
+      console.log("Message: " + response.getResponseCodes(req.body.responseCode))
+      if(req.body.responseCode == 100){
+          return res.redirect(`http://localhost:5500/success?id=${req.body.orderId}&checksum=${req.body.checksum}`);
+      } else {
+          return res.redirect(`http://localhost:5500/failure?id=${req.body.orderId}&checksum=${req.body.checksum}`);
+      }
+  } catch (error) {
+      console.log(error)
+  }
+});
 
 
 
