@@ -13,7 +13,7 @@ import Addproduct from './components/addproduct/AddProduct';
 import Product from './components/product/Product';
 import Carts from './components/carts/Carts';
 import Adminlogin from './components/adminLogin/Adminlogin';
-import Wishlist from './components/wishlist/Wishlist';
+import Wishlist from './components/Wishlist/Wishlist';
 import 'font-awesome/css/font-awesome.min.css';
 
 function App() {
