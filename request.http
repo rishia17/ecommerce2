@@ -1,0 +1,32 @@
+POST http://localhost:5500/admin-api/user
+Content-Type: application/json
+
+{
+  "userName": "adminUser123",
+  "password": "adminPassword123",
+  "email": "admin@example.com",
+  "userType": "admin",
+  "cart": []
+}
+
+###
+
+POST http://localhost:5500/admin-api/login
+Content-Type: application/json
+
+{
+  "userName": "adminUser123",
+  "password": "adminPassword123",
+   "userType": "admin"
+}
+
+
+
+###
+POST http://localhost:5500/admin-api/new-product
+Content-Type: application/json
+
+{
+  "name":"carrrr",
+  "type":"df"
+}

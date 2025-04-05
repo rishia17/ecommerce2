@@ -13,6 +13,7 @@ import Addproduct from './components/addproduct/AddProduct';
 import Product from './components/product/Product';
 import Carts from './components/carts/Carts';
 import Adminlogin from './components/adminLogin/Adminlogin';
+import Wishlist from './components/wishlist/Wishlist';
 import 'font-awesome/css/font-awesome.min.css';
 
 function App() {
@@ -58,6 +59,10 @@ function App() {
           path:'/cart',
           element:<Carts/>
         },
+        {
+          path: '/wishlist',
+          element: <Wishlist />
+        },        
         {
           path:'/admin',
           element:<Adminlogin/>

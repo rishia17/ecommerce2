@@ -227,5 +227,70 @@ userApp.get('/products/offers', expressAsyncHandler(async (req, res) => {
 ));
 
 
+//products added to wishlist
+userApp.post('/wishlist', expressAsyncHandler(async (req, res) => {
+  const { userName, productId } = req.body;
+
+  // Find user
+  const user = await userCollection.findOne({ userName: userName });
+  if (!user) return res.status(404).send('User not found');
+
+  // Add to wishlist (prevent duplicates)
+  const result = await userCollection.updateOne(
+    { userName: userName },
+    { $addToSet: { wishlist: productId } }
+  );
+
+  if (result.modifiedCount === 0) {
+    return res.send({ message: "product is not added to wishlist" });
+  }
+
+  res.send({ message: "product added to wishlist" });
+}));
+
+
+// delete product from wishlist
+userApp.post('/wishlist/:user/:productId', expressAsyncHandler(async (req, res) => {
+  const userName = req.params.user;
+  const productId = Number(req.params.productId);
+
+  const user = await userCollection.findOne({ userName: userName });
+  if (!user) return res.status(404).send('User not found');
+
+  const result = await userCollection.updateOne(
+    { userName: userName },
+    { $pull: { wishlist: productId } }
+  );
+  console.log("deletedddd")
+  if (result.modifiedCount === 0) {
+    return res.send({ message: 'Product is not in wishlist' });
+  }
+
+  res.send({ message: 'product removed from wishlist' });
+}));
+
+// get all products in wishlist
+userApp.get('/wishlist/:user', expressAsyncHandler(async (req, res) => {
+  const userName = req.params.user;
+  const user = await userCollection.findOne({ userName: userName });
+
+  if (!user) return res.status(404).send('User not found');
+
+  const productIds = user.wishlist; // Extract product IDs from wishlist
+  const products = await productsCollection.find({
+    productId: { $in: productIds }
+  }).toArray();
+
+  if (products.length > 0) {
+    res.send({ message: "all wishlist products", payload: products });
+  } else {
+    res.send({ message: "no products" });
+  }
+}));
+
+
+
+
+
 // exporting the file
 module.exports=userApp;

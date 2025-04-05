@@ -28,11 +28,9 @@ function Products() {
     if (filteredProducts.length !== 0) {
       getFilteredProducts(filteredProducts);
     } else {
-      if (currentUser.userType === "admin") {
-        res = await axiosWithToken.get(`http://localhost:5500/admin-api/products`)
-      } else {
+
         res = await axiosWithToken.get(`http://localhost:5500/user-api/products`)
-      }
+
       if (res.data.message === 'all products') {
         setProductsList(res.data.payload)
       } else {
@@ -40,7 +38,24 @@ function Products() {
       }
     }
   }
+
+  const addToWishlist = async (productId) => {
+    let wishlistObj = {
+      userName: currentUser.userName,
+      productId: productId
+    };
   
+    if (currentUser.userType === 'user') {
+      const res = await axiosWithToken.post(`http://localhost:5500/user-api/wishlist`, wishlistObj);
+      if (res.data.message === 'product added to wishlist') {
+        // Optional: show success message or toast
+      } else {
+        setErr(res.data.message);
+      }
+    }
+  };
+  
+
   useEffect(() => {
     getAllProducts()
   }, [])
@@ -238,7 +253,11 @@ function Products() {
                     <div className='card-mrp' onClick={() => getProductDetails(product)}>
                       <p>MRP: <span style={{ textDecoration: "line-through" }}>&#x20B9; {`${product.price}`}</span></p>
                     </div>
-                    <button className='btn btn-warning' onClick={() => addCart(product.productId)}> Add to Cart</button>
+                    {/* <button className='btn btn-warning' onClick={() => addCart(product.productId)}> Add to Cart</button> */}
+                    <div className='d-flex' style={{ gap: "10px" }}>
+                      <button className='btn btn-warning' onClick={() => addCart(product.productId)}>Add to Cart</button>
+                      <button className='btn btn-outline-danger' onClick={() => addToWishlist(product.productId)}>Wishlist</button>
+                    </div>
                   </div>
                 </div>
               </div>

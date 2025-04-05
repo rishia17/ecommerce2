@@ -5,6 +5,8 @@ import '../header/Header.css';
 import logoImage from '../../assets/logo.PNG';
 import { useSelector, useDispatch } from "react-redux";
 import { resetState } from "../../redux/slices/userLoginSlice";
+import { FiHeart } from "react-icons/fi";
+
 
 function Header() {
   const { loginStatus, currentUser } = useSelector(state => state.userLogin);
@@ -62,9 +64,13 @@ function Header() {
           </>
         )}
       </div>
+      <div className='wishlistlogo d-flex justify-content-center align-items-center' style={{ marginRight: "15px" }}>
+        <FiHeart size={22} color='white' onClick={() => navigate('/wishlist')} style={{ cursor: 'pointer' }} />
+      </div>
       <div className='cartlogo d-flex justify-content-center align-items-center'>
         <FiShoppingCart height="8px" width="6px" color='white' onClick={NavigateToCart} />
       </div>
+
     </div>
   );
 }

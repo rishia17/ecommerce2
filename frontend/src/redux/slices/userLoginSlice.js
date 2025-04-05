@@ -7,10 +7,11 @@ export const userLoginThunk = createAsyncThunk('userLogin', async (userCred, thu
     if (userCred.userType === 'user') {
       res = await axios.post('http://localhost:5500/user-api/login', userCred);
     } else if (userCred.userType === 'admin') {
-      res = await axios.post('http://localhost:5500/admin-api/login', userCred);
+      console.log(userCred)
+      res = await axios.post('http://localhost:5500/admin-api/login', userCred); 
     }
-
-    if (res.data.message === 'login success') {
+    if (res.data.message === 'Login success') {
+      console.log('lessss gooo')
       sessionStorage.setItem('token', res.data.token);
       return res.data;
     } else {

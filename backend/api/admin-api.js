@@ -22,10 +22,11 @@ adminApp.post('/user',expressAsyncHandler(createUserOrAdmin))
 adminApp.post('/login',expressAsyncHandler(userOrAdminLogin))
 
 // to save new product
-adminApp.get('/new-product',expressAsyncHandler(async(req,res)=>{
+adminApp.post('/new-product',expressAsyncHandler(async(req,res)=>{
     // get a new product
     const newProduct=req.body;
     //sav new product to products collection
+    console.log(newProduct)
     await productsCollection.insertOne(newProduct)
     // send res
     res.send({message:"new product is added"})
