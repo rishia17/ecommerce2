@@ -55,6 +55,9 @@ const adminApp=require('./api/admin-api')
 
 app.use('/user-api',userApp)
 app.use('/admin-api',adminApp)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 app.get('/products/search', expressAsyncHandler(async (req, res) => {
     const { query } = req.query;
