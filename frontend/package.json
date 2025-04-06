@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "https://ecommerce2-2fv8.onrender.com",
   "dependencies": {
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.18",
