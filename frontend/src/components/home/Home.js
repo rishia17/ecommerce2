@@ -56,7 +56,7 @@ function Home() {
 
 const getRecentlyViewed = async () => {
   if (loginStatus) {
-    const res = await axiosWithToken.get(`http://localhost:5500/user-api/recently-viewed/${currentUser.userName}`);
+    const res = await axiosWithToken.get(`/user-api/recently-viewed/${currentUser.userName}`);
     if (res.data.message === 'recently viewed products') {
       setRecentlyViewed(res.data.payload);
     }
@@ -125,7 +125,7 @@ useEffect(() => {
   let [err, setErr] = useState('');
 
   const getTopNewProducts = async () => {
-      const res = await axiosWithToken.get(`http://localhost:5500/user-api/products/top-new`);
+      const res = await axiosWithToken.get(`/user-api/products/top-new`);
       if (res.data.message === 'products fetched') {
         setTopProductsList(res.data.payload);
       } else {
@@ -138,7 +138,7 @@ useEffect(() => {
   }, []);
 
   const getLimitedOfferProducts = async () => {
-    const res = await axiosWithToken.get(`http://localhost:5500/user-api/products/offers`);
+    const res = await axiosWithToken.get(`/user-api/products/offers`);
     if (res.data.message === 'products fetched') {
       setLimitedOffersList(res.data.payload);
     } else {

@@ -33,12 +33,12 @@ function Product() {
         return;
       }
       if (currentUser.userType === 'user') {
-        const res = await axios.get(`http://localhost:5500/user-api/related/${state.productId}`);
+        const res = await axios.get(`/user-api/related/${state.productId}`);
         const rel = res.data;
         setRelatedProducts(rel);
       }
       else {
-        const res = await axios.get(`http://localhost:5500/admin-api/related/${state.productId}`);
+        const res = await axios.get(`/admin-api/related/${state.productId}`);
         setRelatedProducts(res.data);
         const rel = res.data;
         setRelatedProducts(rel);
@@ -57,7 +57,7 @@ function Product() {
         productId: productid
       }
       if (currentUser.userType === 'user') {
-        const res = await axiosWithToken.post(`http://localhost:5500/user-api/cart`, {
+        const res = await axiosWithToken.post(`/user-api/cart`, {
           obj: cartObj,
           productId: state.productId,
           user: {
@@ -89,7 +89,7 @@ function Product() {
         productId: productid
       }
       if (currentUser.userType === 'user') {
-        const res = await axiosWithToken.post(`http://localhost:5500/user-api/wishlist`, cartObj)
+        const res = await axiosWithToken.post(`/user-api/wishlist`, cartObj)
         if (res.data.message === 'product added to wishlist') {
           // console.log("added")
           toast.success("Added to Wishlist!");
@@ -107,7 +107,7 @@ function Product() {
   const addToRecentlyViewed = async (product) => {
     if (loginStatus && currentUser.userType === 'user') {
       try {
-        const res = await axiosWithToken.post('http://localhost:5500/user-api/recently-viewed', {
+        const res = await axiosWithToken.post('/user-api/recently-viewed', {
           userName: currentUser.userName,
           productId: product.productId
         });
@@ -130,7 +130,7 @@ function Product() {
     if(!loginStatus || currentUser.userType!='admin') return;
     const obj = {product:state,basePrice:state.price}
     try{
-        let res =  await axiosWithToken.post('http://localhost:5500/admin-api/calculate-price', obj);
+        let res =  await axiosWithToken.post('/admin-api/calculate-price', obj);
         console.log(res)
         setSugprice(res.data.dynamicPrice.toString())
         console.log(sugprice)

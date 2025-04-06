@@ -10,7 +10,7 @@ function Contact() {
 
     const onSignUpFormSubmit = async (userObj) => {
         try {
-            const response = await axios.post('http://localhost:5500/user-api/send-email', userObj);
+            const response = await axios.post('/user-api/send-email', userObj);
             setSuccess('Email sent successfully!');
             setErr('');
         } catch (error) {

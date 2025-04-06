@@ -28,7 +28,7 @@ function AddProduct() {
     newProduct.imageUrls = newProduct.imageUrls.split('\n').map(url => url.trim());
  
     // make http post request to author api
-    let res=await axiosWithToken.post('http://localhost:5500/admin-api/new-product',newProduct)
+    let res=await axiosWithToken.post('/admin-api/new-product',newProduct)
     if(res.data.message==="new product is added"){
         //navigate for articles author component
           // 

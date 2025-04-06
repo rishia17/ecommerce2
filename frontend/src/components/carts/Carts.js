@@ -31,7 +31,7 @@ function Carts() {
     try {
       let res;
       if (currentUser.userType === "user") {
-        res = await axiosWithToken.get(`http://localhost:5500/user-api/mycart/${currentUser.userName}`);
+        res = await axiosWithToken.get(`/user-api/mycart/${currentUser.userName}`);
       }
       if (res.data.message === 'all cart products') {
         setproductsList(res.data.payload);
@@ -55,7 +55,7 @@ function Carts() {
   const deleteProductFromCart = async (product) => {
     try {
       const productId = product.productId;
-      const res = await axiosWithToken.post(`http://localhost:5500/user-api/mycart/${currentUser.userName}/${productId}`);
+      const res = await axiosWithToken.post(`/user-api/mycart/${currentUser.userName}/${productId}`);
       if (res.data.message !== 'product deleted') {
         setErr(res.data.message);
       }
@@ -87,7 +87,7 @@ function Carts() {
       amount: totalPrice
     };
     try {
-      let res = await axios.post("http://localhost:5500/user-api/transact", obj);
+      let res = await axios.post("/user-api/transact", obj);
       console.log(res)
       setZaakpayData({
         url: res.data.url,

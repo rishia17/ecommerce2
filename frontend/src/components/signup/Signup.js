@@ -14,10 +14,10 @@ function SignUp() {
         userObj = { ...userObj, userType: 'user', cart: [] };
         console.log(userObj)
     if(userObj.userType==='user'){
-    res=await axios.post('http://localhost:5500/user-api/user',userObj)
+    res=await axios.post('/user-api/user',userObj)
     }
     if(userObj.userType==='admin'){
-      res=await axios.post('http://localhost:5500/admin-api/user',userObj)
+      res=await axios.post('/admin-api/user',userObj)
       }
     if (res.data.message==='user created' || res.data.message==='admin created'){
       //navigate to signin

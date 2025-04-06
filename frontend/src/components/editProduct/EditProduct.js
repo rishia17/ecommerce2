@@ -29,7 +29,7 @@ function EditProduct() {
 
     try {
       const res = await axiosWithToken.put(
-        'http://localhost:5500/admin-api/edit-product',
+        '/admin-api/edit-product',
         updatedProduct
       );
       if (res.data.message === 'product modified') {

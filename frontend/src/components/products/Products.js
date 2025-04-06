@@ -34,9 +34,9 @@ function Products() {
     if (filteredProducts.length !== 0) {
       getFilteredProducts(filteredProducts);
     } else {
-      if (currentUser.userType === 'admin') res = await axiosWithToken.get(`http://localhost:5500/admin-api/products`)
+      if (currentUser.userType === 'admin') res = await axiosWithToken.get(`/admin-api/products`)
 
-      else res = await axiosWithToken.get(`http://localhost:5500/user-api/products`)
+      else res = await axiosWithToken.get(`/user-api/products`)
 
       if (res.data.message === 'all products') {
         setProductsList(res.data.payload)
@@ -57,7 +57,7 @@ function Products() {
       };
 
       if (currentUser.userType === 'user') {
-        const res = await axiosWithToken.post(`http://localhost:5500/user-api/wishlist`, wishlistObj);
+        const res = await axiosWithToken.post(`/user-api/wishlist`, wishlistObj);
         if (res.data.message === 'product added to wishlist') {
           // Optional: show success message or toast
           toast.success("Added to Wishlist!");
@@ -111,9 +111,9 @@ function Products() {
     if (filterObj != null) {
       setPage(1);
       if (currentUser.userType === "admin") {
-        res = await axiosWithToken.post(`http://localhost:5500/admin-api/product-filter`, filterObj)
+        res = await axiosWithToken.post(`/admin-api/product-filter`, filterObj)
       } else {
-        res = await axiosWithToken.post(`http://localhost:5500/user-api/product-filter`, filterObj)
+        res = await axiosWithToken.post(`/user-api/product-filter`, filterObj)
       }
       if (res.data.message === 'filtered products') {
         setProductsList(res.data.payload)
@@ -181,7 +181,7 @@ function Products() {
         productId: productid
       }
       if (currentUser.userType === 'user') {
-        const res = await axiosWithToken.post(`http://localhost:5500/user-api/cart`, {
+        const res = await axiosWithToken.post(`/user-api/cart`, {
           obj: cartObj,
           productId: cartObj.productId,
           user: {
@@ -208,7 +208,7 @@ function Products() {
       return;
     }
     try {
-      const res = await axiosWithToken.get(`http://localhost:5500/products/search?query=${query}`);
+      const res = await axiosWithToken.get(`/products/search?query=${query}`);
       if (res.data.message === 'search success') {
         setProductsList(res.data.payload);
       } else {
@@ -233,7 +233,7 @@ function Products() {
   const deleteProduct = async (productId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5500/admin-api/delete-product/${productId}`
+        `/admin-api/delete-product/${productId}`
       );
       console.log(response.data.message);
       getAllProducts();

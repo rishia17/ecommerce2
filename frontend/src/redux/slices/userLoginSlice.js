@@ -5,10 +5,10 @@ export const userLoginThunk = createAsyncThunk('userLogin', async (userCred, thu
   try {
     let res;
     if (userCred.userType === 'user') {
-      res = await axios.post('http://localhost:5500/user-api/login', userCred);
+      res = await axios.post('/user-api/login', userCred);
     } else if (userCred.userType === 'admin') {
       console.log(userCred)
-      res = await axios.post('http://localhost:5500/admin-api/login', userCred); 
+      res = await axios.post('/admin-api/login', userCred); 
     }
     if (res.data.message === 'Login success') {
       console.log('lessss gooo')

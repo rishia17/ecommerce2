@@ -21,7 +21,7 @@ function Wishlist() {
 
   const getWishlistProducts = async () => {
     try {
-      const res = await axiosWithToken.get(`http://localhost:5500/user-api/wishlist/${currentUser.userName}`);
+      const res = await axiosWithToken.get(`/user-api/wishlist/${currentUser.userName}`);
       if (res.data.message === 'all wishlist products') {
         setWishlist(res.data.payload);
       } else {
@@ -43,7 +43,7 @@ function Wishlist() {
 
   const deleteFromWishlist = async (product) => {
     try {
-      const res = await axiosWithToken.post(`http://localhost:5500/user-api/wishlist/${currentUser.userName}/${product.productId}`);
+      const res = await axiosWithToken.post(`/user-api/wishlist/${currentUser.userName}/${product.productId}`);
       if (res.data.message === 'product removed from wishlist') {
         console.log('hiiiii')
         // Refresh wishlist
