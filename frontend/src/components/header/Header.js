@@ -51,8 +51,10 @@ function Header() {
         <li className='nav-item'><NavLink className="nav-link text-white" to="">Home</NavLink></li>
         <li className='nav-item'><NavLink className="nav-link text-white" to="about">About</NavLink></li>
         <li className='nav-item'><NavLink className="nav-link text-white" to="products">Products</NavLink></li>
-        {(loginStatus === false || currentUser.userType !== "admin") && (
-          <li className='nav-item'><NavLink className="nav-link text-white" to="contact">Contact</NavLink></li>
+        {(loginStatus === false || currentUser.userType !== "admin") ? (
+          <li className='nav-item'><NavLink className="nav-link text-white" to="contact">Contact</NavLink></li>)
+          :
+          (<li className='nav-item'><NavLink className="nav-link text-white" to="dashboard">Dashboard</NavLink></li>
         )}
         {currentUser.userType === 'admin' && (
           <li className='nav-item'><NavLink className="nav-link text-white" to="addproduct">Add Product</NavLink></li>

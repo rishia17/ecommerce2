@@ -1,10 +1,11 @@
-// create mini express application
 const exp=require('express')
 const adminApp=exp.Router()
 const {createUserOrAdmin,userOrAdminLogin}=require('./util')
 const expressAsyncHandler=require('express-async-handler')
-
+const cheerio = require("cheerio");
+const googleTrends = require('google-trends-api');
 const verifyToken=require("../middlewares/verifyToken")
+const axios = require('axios')
 
 
 let productsCollection;
@@ -14,6 +15,26 @@ adminApp.use((req,res,next)=>{
     productsCollection=req.app.get('productscollection')
     next()
 })
+
+function getDynamicPrice(basePrice, demandFactor = 0.5, competitorPrice = null) {
+  let price = basePrice;
+
+  // Adjust based on demand
+  if (demandFactor > 0.8) {
+    price *= 1.15;
+  } else if (demandFactor > 0.6) {
+    price *= 1.1;
+  } else if (demandFactor < 0.3) {
+    price *= 0.85;
+  }
+
+  // Compete with competitor price if available
+  if (competitorPrice && price > competitorPrice) {
+    price = competitorPrice * 0.98;
+  }
+
+  return Math.round(price * 100) / 100;
+}
 
 
 //getting collection object
@@ -78,6 +99,17 @@ adminApp.post('/product-filter',expressAsyncHandler(async(req,res)=>{
     res.send({ message: "all products", payload: productsList });
   }));
 
+  adminApp.get('/users', expressAsyncHandler(async (req, res) => {
+    try {
+      const usersList = await userCollection.find().toArray();
+      res.send({ message: "All users fetched successfully", payload: usersList });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).send({ message: "Failed to fetch users", error });
+    }
+  }));
+  
+
   adminApp.put('/edit-product', expressAsyncHandler(async (req, res) => {
       const updatedProduct = req.body;
 
@@ -126,5 +158,46 @@ adminApp.delete('/delete-product/:productId', expressAsyncHandler(async (req, re
       res.send({ message: "Error deleting product" });
     }
   }));
+
+  adminApp.post("/calculate-price", async (req, res) => {
+    try {
+      let { basePrice, product } = req.body;
+      basePrice = parseFloat(basePrice);
+  
+      if (isNaN(basePrice)) {
+        return res.json({ error: "basePrice must be a number" });
+      }
+  
+      const name = product.name.split(" ").slice(0, 3).join(" ");
+      const encodedName = encodeURIComponent(name);
+  
+      // 🔍 Flipkart scrape
+      const flipkartResponse = await axios.get(`https://www.flipkart.com/search?q=${encodedName}`, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        },
+      });
+  
+      const $ = cheerio.load(flipkartResponse.data);
+      const priceText = $('div.Nx9bqj._4b5DiR').first().text().replace(/[₹,]/g, "");
+      const competitorPrice = parseFloat(priceText);
+  
+      // 📈 Google Trends demand factor
+      const results = await googleTrends.interestOverTime({ keyword: name, geo: "IN" });
+      const parsed = JSON.parse(results);
+      const timelineData = parsed.default.timelineData;
+      const averageInterest =
+        timelineData.reduce((sum, item) => sum + item.value[0], 0) / timelineData.length;
+      const demandFactor = Math.min(1, averageInterest/100); // Normalize between 0-1
+  
+      // 🧮 Calculate dynamic price
+      const dynamicPrice = getDynamicPrice(basePrice, demandFactor, competitorPrice);
+  
+      res.json({ dynamicPrice, demandFactor, competitorPrice });
+    } catch (e) {
+      res.json({ error: e.message });
+    }
+  });
 //export
 module.exports=adminApp;

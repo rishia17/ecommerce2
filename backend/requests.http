@@ -16,3 +16,14 @@ Content-Type: application/json
     "userName":"rishi",
     "amount":1000
 }
+###
+
+POST http://localhost:5500/admin-api/calculate-price
+Content-Type: application/json
+
+{
+    "product":{
+        "name":"IPhone 15"
+    },
+    "basePrice":69197
+}

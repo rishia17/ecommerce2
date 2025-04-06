@@ -17,6 +17,7 @@ import Wishlist from './components/Wishlist/Wishlist';
 
 import 'font-awesome/css/font-awesome.min.css';
 import EditProduct from './components/editProduct/EditProduct';
+import Dashboard from './components/dashboard/Dashboard';
 
 
 function App() {
@@ -81,6 +82,10 @@ function App() {
         {
           path:'/admin',
           element:<Adminlogin/>
+        },
+        {
+          path:'/dashboard',
+          element: <Dashboard/>
         }
       ]
 

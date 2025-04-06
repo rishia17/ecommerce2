@@ -1,0 +1,13 @@
+.app-container {
+    padding: 10px;
+    font-family: "Segoe UI", sans-serif;
+    background: #f4f4f4;
+    text-align: center;
+  }
+  
+  .dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }

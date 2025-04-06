@@ -88,6 +88,7 @@ function Carts() {
     };
     try {
       let res = await axios.post("http://localhost:5500/user-api/transact", obj);
+      console.log(res)
       setZaakpayData({
         url: res.data.url,
         data: {
@@ -95,6 +96,7 @@ function Carts() {
           checksum: res.data.checksum
         }
       });
+      window.open(res.data.url)
     } catch (e) {
       console.error("Payment error", e);
     }
@@ -179,14 +181,7 @@ function Carts() {
         </div>
       </div>
 
-      {/* ✅ ZAAKPAY PAYMENT FORM */}
-      {zaakpayData && (
-        <ZaakPay
-          url={zaakpayData.url}
-          data={zaakpayData.data}
-          checksum={zaakpayData.data.checksum}
-        />
-      )}
+      
     </div>
   );
 }

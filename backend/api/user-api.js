@@ -422,40 +422,63 @@ cron.schedule("0 10 * * *", async () => {
     }
 });
 
-userApp.post('/transact', async function(req, res,next) {
-  const obj = req.body
-  console.log(obj.data)
-  console.log("Order ID:", req.body.orderId)
-console.log("Response Code:", req.body.responseCode)
-console.log("Message:", response.getResponseCodes(req.body.responseCode))
 
-  const id = `OID${Date.now()}`
-  const data = {
+
+userApp.post('/transact', async function(req, res, next) {
+  try {
+    const obj = req.body;
+    const id = `OID${Date.now()}`;
+    
+    const data = {
       amount: 100,
       firstName: obj.userName,
       buyerEmail: obj.email,
       currency: "INR",
       merchantIdentifier: "fb2016ffd3a64b2994a6289dc2b671a4",
-      orderId: `ORID${Date.now()}`,
+      orderId: id,
       returnUrl: "http://localhost:5500/user-api/status"
-  }
-console.log('hi',data)
-  var checksumstring = checksum.getChecksumString(data);
-  var calculatedchecksum = checksum.calculateChecksum(checksumstring);
-  var url = transacturl.merchantInfo.transactApi;
+    };
 
-  return res.send({
-       url: url,
-       checksum: calculatedchecksum,
-       data: data
-   }) 
+
+    
+    const orderEntry = {
+      orderId: id,
+      products: obj.products || [],
+      amount: data.amount,
+      status: "initiated",
+      date: new Date()
+    };
+
+    await userCollection.updateOne(
+      { email: obj.email }, // or use {_id: ObjectId(obj.userId)} if you're using IDs
+      { $push: { orders: orderEntry } },
+      { upsert: true }
+    );
+
+    console.log("Order entry pushed:", orderEntry);
+
+    // 🔐 Zaakpay integration
+    var checksumstring = checksum.getChecksumString(data);
+    var calculatedchecksum = checksum.calculateChecksum(checksumstring);
+    var url = transacturl.merchantInfo.transactApi;
+
+    return res.send({
+      url: url,
+      checksum: calculatedchecksum,
+      data: data
+    });
+  } catch (err) {
+    console.error("Transaction error:", err);
+    res.status(500).send({ error: "Transaction failed" });
+  }
 });
+
 
 userApp.post('/status', async function(req, res) {
   try {
       console.log(req.body)
 
-      console.log("Message: " + res.getResponseCodes(req.body.responseCode))
+      // console.log("Message: " + res.getResponseCodes(req.body.responseCode))
       if(req.body.responseCode == 100){
           return res.redirect(`http://localhost:5500/success?id=${req.body.orderId}&checksum=${req.body.checksum}`);
       } else {

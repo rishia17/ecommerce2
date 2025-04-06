@@ -14,6 +14,7 @@ import RelatedProductsCarousel from '../relatedProducts/relatedProducts';
 function Product() {
   const { state } = useLocation()
   let [mainImage, setMainImage] = useState(state.imageUrls[0]);
+  let [sugprice,setSugprice] = useState('')
   const token = sessionStorage.getItem('token');
   const axiosWithToken = axios.create({
     headers: { Authorization: `Bearer ${token}` }
@@ -125,6 +126,23 @@ function Product() {
     }
   }, [state]);
 
+  const loadSug = async()=>{
+    if(!loginStatus || currentUser.userType!='admin') return;
+    const obj = {product:state,basePrice:state.price}
+    try{
+        let res =  await axiosWithToken.post('http://localhost:5500/admin-api/calculate-price', obj);
+        console.log(res)
+        setSugprice(res.data.dynamicPrice.toString())
+        console.log(sugprice)
+    }catch(e){
+      alert(e)
+    }
+  }
+
+  useEffect(()=>{
+    loadSug()
+  },[currentUser])
+
   return (
     <div className="container mt-4">
       <ToastContainer position="top-right" autoClose={2000} />
@@ -170,6 +188,16 @@ function Product() {
               </p>
               <span className="text-danger">{state.discount}% off</span>
             </div>
+
+            { loginStatus && currentUser.userType=='admin' &&
+              <div className="product-mrp mb-2">
+              <p className="mb-1">
+                Suggested Price: <span >₹{sugprice}</span>
+              </p>
+              <p style={{fontStyle:'italic'}}>based on competitor and other demand factors</p>
+             
+            </div>
+            }
 
             <p className="mb-2">Brand: <strong>{state.brand}</strong></p>
 
