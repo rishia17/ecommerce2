@@ -3,17 +3,17 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import slide1 from '../../assets/carousel/slide1.jpg';
-import slide2 from '../../assets/carousel/slide2.jpg';
+import slide2 from '../../assets/carousel/slide2.webp';
 import slide3 from '../../assets/carousel/slide3.jpg';
-import slide4 from '../../assets/carousel/slide4.jpg';
+import slide4 from '../../assets/carousel/slide4.webp';
 import slide5 from '../../assets/carousel/slide5.jpg';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './Home.css'; 
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 // Custom arrow button components
 const CustomPrevArrow = (props) => {
@@ -32,6 +32,7 @@ const CustomPrevArrow = (props) => {
   );
 };
 
+
 const CustomNextArrow = (props) => {
   const { className, onClick } = props;
   return (
@@ -48,7 +49,26 @@ const CustomNextArrow = (props) => {
   );
 };
 
+
+
 function Home() {
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+const getRecentlyViewed = async () => {
+  if (loginStatus) {
+    const res = await axiosWithToken.get(`http://localhost:5500/user-api/recently-viewed/${currentUser.userName}`);
+    if (res.data.message === 'recently viewed products') {
+      setRecentlyViewed(res.data.payload);
+    }
+  }
+};
+
+useEffect(() => {
+  getRecentlyViewed();
+}, []);
+  const {loginStatus,currentUser} = useSelector((state)=>state.userLogin)
+
+
   const settings = {
     dots: false,
     infinite: false,
@@ -56,14 +76,46 @@ function Home() {
     slidesToShow: 5,
     slidesToScroll: 1,
     prevArrow: <CustomPrevArrow />,
-    nextArrow: <CustomNextArrow />
+    nextArrow: <CustomNextArrow />,
+    responsive: [
+      {
+        breakpoint: 1400, // large laptops and hubs
+        settings: {
+          slidesToShow: 5,
+        },
+      },
+      {
+        breakpoint: 1200, // tablets / smaller laptops
+        settings: {
+          slidesToShow: 4,
+        },
+      },
+      {
+        breakpoint: 992, // small tablets / big phones
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 600, // phones
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 400, // phones
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
+  
   
   const images = [slide1, slide2, slide3, slide4, slide5];
   const [topProductsList, setTopProductsList] = useState([]);
   const [limitedOffersList, setLimitedOffersList] = useState([]);
   const token = sessionStorage.getItem('token');
-  const {loginStatus,currentUser} = useSelector((state)=>state.userLogin)
   
   const axiosWithToken = axios.create({
     headers: { Authorization: `Bearer ${token}` },
@@ -71,21 +123,6 @@ function Home() {
   
   const navigate = useNavigate();
   let [err, setErr] = useState('');
-
-  const [recentlyViewed, setRecentlyViewed] = useState([]);
-
-    const getRecentlyViewed = async () => {
-      if (loginStatus) {
-        const res = await axiosWithToken.get(`http://localhost:5500/user-api/recently-viewed/${currentUser.userName}`);
-        if (res.data.message === 'recently viewed products') {
-          setRecentlyViewed(res.data.payload);
-        }
-      }
-    };
-
-    useEffect(() => {
-      getRecentlyViewed();
-    }, []);
 
   const getTopNewProducts = async () => {
       const res = await axiosWithToken.get(`http://localhost:5500/user-api/products/top-new`);
@@ -127,8 +164,8 @@ useEffect(() => {
       </Carousel>
 
       <div>
-        <div className='recommended-products'>
-          <h5 style={{ textAlign: 'left', marginLeft: '10px' }}>Recommended products</h5>
+        <div className='recommended-products mt-3'>
+          <h5 style={{ textAlign: 'left', marginLeft: '10px' }}><b>Recommended products</b></h5>
           <div className='products-slider' style={{ maxWidth: '100%', overflowX: 'hidden' }}>
             {topProductsList.length === 0 ? (
               <p>No products found</p>
@@ -143,7 +180,8 @@ useEffect(() => {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      border: "2px solid grey"
                     }}>
                     <div className='card-side1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                       <img 
@@ -160,7 +198,7 @@ useEffect(() => {
                       </p>
                     </div>
                     <div className='product-brand' style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.2rem', fontWeight: '500' }}>
+                      <p style={{ fontSize: '1.2rem', fontWeight: '500', margin:0}}>
                         <span style={{ fontWeight: 'bold' }}>Brand:</span> {`${products.brand}`}
                       </p>
                     </div>
@@ -185,7 +223,7 @@ useEffect(() => {
         </div>
 
         <div className='limited-offers'>
-          <h5 style={{ textAlign: 'left', marginLeft: '10px', fontWeight: '500' }}>Limited offers</h5>
+          <h5 style={{ textAlign: 'left', marginLeft: '10px', fontWeight: '500' }}><b>Limited offers</b></h5>
           <div className='products-slider' style={{ maxWidth: '100%', overflowX: 'hidden' }}>
             {limitedOffersList.length === 0 ? (
               <p>No products found</p>
@@ -200,7 +238,8 @@ useEffect(() => {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      border: "2px solid grey"
                     }}>
                     <div className='card-side1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                       <img 
@@ -217,7 +256,7 @@ useEffect(() => {
                       </p>
                     </div>
                     <div className='product-brand' style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.2rem', fontWeight: '500' }}>
+                      <p style={{ fontSize: '1.2rem', fontWeight: '500', margin:0 }}>
                         <span style={{ fontWeight: 'bold' }}>Brand:</span> {`${products.brand}`}
                       </p>
                     </div>

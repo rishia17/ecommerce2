@@ -7,15 +7,15 @@ import './About.css';
 function About() {
   return (
     <div className='container'>
-      <div className='desc text-center mx-auto mb-5'>
-        <p>WHY ACME OUTDOORS?</p>
+      <div className='desc text-center mx-auto mb-5 mt-4'>
+        <p>WHY BuyIt OUTDOORS?</p>
         <h3>We’re the best in the business.</h3>
         <p>For more than 30 years, we’ve been leading the way across Oklahoma — creating the best possible customer experience since 1989.</p>
       </div>
       <div className='d-flex row justify-content-center'>
         {/* Card 1 */}
         <div className='col-md-3 d-flex flex-column align-items-center mb-4'>
-          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '90%', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '100%', border: '1px solid #ddd', borderRadius: '8px' }}>
             <div className='d-flex justify-content-center mb-3'>
                 <MdVerified size={40} style={{ color: "#eb5757" }} />
             </div>
@@ -26,7 +26,7 @@ function About() {
 
         {/* Card 2 */}
         <div className='col-md-3 d-flex flex-column align-items-center mb-4'>
-          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '90%', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '100%', border: '1px solid #ddd', borderRadius: '8px' }}>
             <div className='d-flex justify-content-center mb-3'>
                 <IoCartSharp size={40} style={{ color: "#eb5757" }} />
             </div>
@@ -37,7 +37,7 @@ function About() {
 
         {/* Card 3 */}
         <div className='col-md-3 d-flex flex-column align-items-center mb-4'>
-          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '90%', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '100%', border: '1px solid #ddd', borderRadius: '8px' }}>
             <div className='d-flex justify-content-center mb-3'>
                 <TbTruckDelivery size={40} style={{ color: "#eb5757" }} />
             </div>
@@ -48,7 +48,7 @@ function About() {
 
         {/* Card 4 */}
         <div className='col-md-3 d-flex flex-column align-items-center mb-4'>
-          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '90%', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <div className='card p-3 text-center hover-card' style={{ width: '100%', height: '100%', border: '1px solid #ddd', borderRadius: '8px' }}>
             <div className='d-flex justify-content-center mb-3'>
                 <FaRegCommentAlt size={40} style={{ color: "#eb5757" }} />
             </div>

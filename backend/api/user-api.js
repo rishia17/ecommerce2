@@ -455,7 +455,7 @@ userApp.post('/status', async function(req, res) {
   try {
       console.log(req.body)
 
-      console.log("Message: " + response.getResponseCodes(req.body.responseCode))
+      console.log("Message: " + res.getResponseCodes(req.body.responseCode))
       if(req.body.responseCode == 100){
           return res.redirect(`http://localhost:5500/success?id=${req.body.orderId}&checksum=${req.body.checksum}`);
       } else {

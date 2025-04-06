@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { MdDelete } from "react-icons/md";
+import './Wishlist.css';
 
 
 function Wishlist() {

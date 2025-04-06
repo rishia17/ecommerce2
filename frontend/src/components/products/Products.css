@@ -1,42 +1,139 @@
-
-.card-side1 img:hover{
-    color: #eb5757;
-}
-
-.card-side2 p:hover{
-    color: #eb5757;
-}
-.card-mrp p:hover{
-    color: #eb5757;
-}
-.card-price span:hover{
-    color: #eb5757;
-}
-
-
-.pagination-btn{
-    display: flex;
-    height: 100px;
-    margin: auto;
-    align-items: center;
-    padding: 5px;
-    justify-content: space-around;
-    font-size: 1.2rem;
-    width: 400px;
-    gap:6px;
-}
-.pagination-btn button{
-    height: 42px;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-.position-sticky {
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
+.products-container {
+    padding: 1rem;
+    position: relative;
   }
   
-  .filters-container {
-    top: 10px; /* Adjust as needed */
-    z-index: 1; /* Ensure it stays above other content */
+  /* Fixed "Show Filters" button */
+  .filters-toggle-btn {
+    position: fixed;
+    top: 80px;
+    right: 1rem;
+    z-index: 1000;
+    padding: 0.6rem 1rem;
+    font-weight: bold;
+  }
+  
+  /* Popup Modal Styles */
+  .filters-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .filters-content {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  /* Close button */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Filters layout */
+  .filters-category,
+  .filters-brand,
+  .filters-price {
+    margin-bottom: 1.5rem;
+  }
+  
+  .filters-content h5 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .filters-content label {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  
+  .products-list {
+    margin-top: 4rem;
+    padding-bottom: 3rem;
+  }
+  
+  .product-card-container {
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid gray;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  .container2:hover {
+    border: 1px solid gray;
+    box-shadow: 4px 4px 20px gray;
+  }
+  
+  .product-card img {
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+  }
+  
+  .product-details h5 {
+    cursor: pointer;
+  }
+  
+  .product-price span,
+  .product-mrp span {
+    font-weight: bold;
+  }
+  
+  .pagination-btn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .pagination-btn p {
+    margin: 0 0.5rem;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .product-card {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .product-image img {
+      width: 100%;
+      max-width: 250px;
+      margin-bottom: 1rem;
+    }
+  
+    .product-details {
+      align-items: center;
+    }
+  
+    .filters-toggle-btn {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
+    }
   }
   

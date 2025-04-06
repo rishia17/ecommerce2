@@ -1,0 +1,129 @@
+/* Wishlist.css */
+
+.container {
+    padding: 1rem;
+  }
+  
+  .card.shadow {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+  
+  .container-display {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .container2 {
+    width: 100%;
+  }
+  
+  .card2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid black;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    gap: 1rem;
+  }
+  
+  .card-side1 img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  
+  .card-side2 {
+    flex: 1;
+    min-width: 220px;
+  }
+  
+  .card-side2 p {
+    font-size: 1.1rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .product-brand p {
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  
+  .prices-card {
+    text-align: center;
+    min-width: 180px;
+  }
+  
+  .card-price span {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+  }
+  
+  .card-mrp p {
+    font-size: 1rem;
+    margin-top: 5px;
+    cursor: pointer;
+  }
+  
+  .card-mrp span {
+    color: #eb5757;
+    margin-left: 5px;
+  }
+  
+  .delete-icon {
+    align-self: start;
+    cursor: pointer;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 992px) {
+    .card2 {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .card-side2,
+    .prices-card {
+      text-align: center;
+      align-items: center;
+      margin: 0;
+    }
+  
+    .card-side2 p,
+    .card-mrp p {
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .card-price span {
+      font-size: 1.3rem;
+    }
+  
+    .card-side2 p {
+      font-size: 1rem;
+    }
+  
+    .product-brand p {
+      font-size: 0.95rem;
+    }
+  
+    .card-mrp p {
+      font-size: 0.9rem;
+    }
+  
+    .delete-icon {
+      position: static;
+      margin-top: 10px;
+    }
+  }
+  

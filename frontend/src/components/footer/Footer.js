@@ -2,11 +2,11 @@ import React from 'react'
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { FaTwitterSquare } from "react-icons/fa";
-import footLogo from '../../assets/footlogo.JPG';
+import footLogo from '../../assets/buyitlogo.png';
 import './Footer.css'
 function Footer() {
   return (
-    <div className='bg-dark p-3'>
+    <div className='p-3' style={{ backgroundColor: "#DC143C"}}>
     <div className='foot-nav d-flex justify-content-between flex-wrap' style={{ marginTop: "1%" }}>
       <div className='foot-logo m-2'>
         <img
@@ -59,7 +59,7 @@ function Footer() {
       </div>
     </div>
     <div className='footer-bottom text-center mt-2' style={{color:"white"}}>
-      <p className=''>&copy; 2024 ACME Company. All rights reserved.</p>
+      <p className=''>&copy; 2024 BuyIt Company. All rights reserved.</p>
     </div>
   </div>
   )

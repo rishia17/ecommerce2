@@ -1,0 +1,21 @@
+@media (max-width: 768px) {
+    .product-image {
+      width: 100% !important;
+      height: auto !important;
+    }
+  
+    .image-box {
+      width: 50px !important;
+      height: 50px !important;
+    }
+  
+    .product-details {
+      text-align: center;
+    }
+  
+    .product-description {
+      text-align: left;
+      padding: 0 10px;
+    }
+  }
+  
